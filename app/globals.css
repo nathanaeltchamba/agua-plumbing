@@ -1,21 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter;
 }
+
+
+@layer utilities {
+  .btn_white { 
+    @apply  border-white bg-white px-8 py-3 text-green-50
+  }
+  .btn_white_text  { 
+    @apply  border-white bg-white px-8 py-3 text-gray-90
+  }
+  .btn_green  { 
+    @apply  border-green-50 bg-green-50 px-8 py-5 text-white
+  }
+  .btn_dark_green { 
+    @apply  bg-green-90 px-8 py-4 text-white transition-all hover:bg-black
+  }
+  .btn_dark_green_outline  { 
+    @apply border-gray-20 bg-green-90 px-8 py-5 text-white
+  }
+  
+  .max-container {
+    @apply mx-auto max-w-[1440px];
+  }
+
+  .padding-container {
+    @apply px-6 lg:px-20 3xl:px-0;
+  }
+
+  .flexCenter {
+    @apply flex items-center justify-center;
+  }
+
+  .flexBetween {
+    @apply flex items-center justify-between;
+  }
+
+  .flexStart {
+    @apply flex items-center justify-start;
+  }
+
+  .flexEnd {
+    @apply flex items-center justify-end;
+  }
+
+  /* FONTS */
+  .regular-64 {
+    @apply text-[64px] font-[400] leading-[120%];
+  }
+
+  .regular-40 {
+    @apply text-[40px] font-[400] leading-[120%];
+  }
+
+  .regular-32 {
+    @apply text-[32px] font-[400];
+  }
+
+  .regular-24 {
+    @apply text-[24px] font-[400];
+  }
+
+  .regular-20 {
+    @apply text-[20px] font-[400];
+  }
+
+  .regular-18 {
+    @apply text-[18px] font-[400];
+  }
+
+  .regular-16 {
+    @apply text-[16px] font-[400];
+  }
+
+  .regular-14 {
+    @apply text-[14px] font-[400];
+  }
+
+  .regular-10 {
+    @apply text-[8px] font-[400];
+  }
+
+  .medium-14 {
+    @apply text-[14px] font-[600];
+  }
+
+  .bold-88 {
+    @apply text-[88px] font-[700] leading-[120%];
+  }
+
+  .bold-64 {
+    @apply text-[64px] font-[700] leading-[120%];
+  }
+
+  .bold-52 {
+    @apply text-[52px] font-[700] leading-[120%];
+  }
+
+  .bold-40 {
+    @apply text-[40px] font-[700] leading-[120%];
+  }
+
+  .bold-32 {
+    @apply text-[32px] font-[700] leading-[120%];
+  }
+
+  .bold-24 {
+    @apply text-[26px] font-[7400];
+  }
+
+  .bold-20 {
+    @apply text-[20px] font-[700];
+  }
+
+  .bold-18 {
+    @apply text-[18px] font-[700];
+  }
+
+  .bold-16 {
+    @apply text-[16px] font-[700];
+  }
+
+  /* Hero */
+  .hero-background {
+    @apply absolute right-0 top-0 w-screen h-screen bg-pattern-2 bg-cover bg-center;
+  }
+  
+  /* Divider */
+  .divider-background {
+    @apply absolute inset-0 w-full h-full bg-pattern-3 bg-cover bg-center;
+  }
+
+  /* Feature */
+  .feature-phone {
+    @apply absolute top-[13%] z-10 hidden max-w-[1500px] rotate-[15deg] md:-left-16 lg:flex  3xl:left-20;
+  }
+
+  /* 404 Background Image */
+  .bg-404 {
+    @apply bg-404-bg bg-cover bg-center h-screen w-screen;
+  }
+
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Conditional Navbar background color */
+.navbar-about {
+  background-color: #333;
+}
+
+.navbar-about a {
+  color: #f9f9f9; 
+}
+
+/* Embla Carousel */
+
+.embla {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla__container {
+  display: flex;
+  will-change: transform;
+}
+
+.embla__slide {
+  position: relative;
+  min-width: 80%; /* Reduce the width */
+  padding: 10px; /* Padding for space around the image */
+  margin: 0 auto;
+  box-sizing: border-box; /* Ensures padding is included in the total width */
+}
+
+.slide-container {
+  border: 4px solid #797878;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Arrows */
+.embla__prev,
+.embla__next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.embla__prev {
+  left: 10px;
+}
+
+.embla__next {
+  right: 10px;
+}
+
+/* Optional hover effect */
+.embla__prev:hover,
+.embla__next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Dots */
+.embla__dots {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.embla__dot {
+  background-color: #ccc;
+  border: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.embla__dot.is-selected {
+  background-color: #000;
+}
+
+.embla__dot:hover {
+  background-color: #888;
+}
+
+
