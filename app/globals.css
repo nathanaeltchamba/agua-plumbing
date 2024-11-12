@@ -134,9 +134,23 @@ body {
   }
 
   /* Hero */
-  .hero-background {
-    @apply absolute right-0 top-0 w-screen h-screen bg-pattern-2 bg-cover bg-center;
+  .hero-map {
+    @apply absolute top-0 right-0 w-full min-h-[800px]; /* Adjust height here */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.6) 90%, #ffffff 100%), url('/mountain.jpg');
+    background-size: cover;
+    background-position: center;
   }
+
+  .hero-map::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20%;
+    background: linear-gradient(to bottom, transparent, white);
+    filter: blur(4px);
+  }
+
   
   /* Divider */
   .divider-background {
@@ -164,15 +178,6 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-}
-
-/* Conditional Navbar background color */
-.navbar-about {
-  background-color: #333;
-}
-
-.navbar-about a {
-  color: #f9f9f9; 
 }
 
 /* Embla Carousel */
