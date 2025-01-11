@@ -1,46 +1,106 @@
-import Image from 'next/image';
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { FaRegLightbulb, FaChartLine, FaHistory } from "react-icons/fa";
 
 const About = () => {
-  return (
-    <section className="relative flex flex-col items-center py-16 lg:py-24 lg:flex-row lg:gap-12 max-w-screen-xl mx-auto">
-      {/* Text Section */}
-      <div className="lg:w-1/2 text-center lg:text-left px-6">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-700 mb-4">
-          About Us
-        </h2>
-        <p className="text-gray-700 mb-8 text-lg">
-          We are dedicated to providing top-notch plumbing services tailored to meet your needs.
-        </p>
+  // Define a union type for tabs
+  type Tab = "History" | "Mission" | "Vision";
 
-        <ul className="space-y-6 text-gray-600">
-          <li className="flex items-center">
-            <Image src="/check.svg" alt="check mark" width={20} height={20} className="text-blue-500 mr-4" />
-            <span>Highly trained and certified plumbers</span>
-          </li>
-          <li className="flex items-center">
-            <Image src="/check.svg" alt="check mark" width={20} height={20} className="text-blue-500 mr-4" />
-            <span>24/7 emergency services available</span>
-          </li>
-          <li className="flex items-center">
-            <Image src="/check.svg" alt="check mark" width={20} height={20} className="text-blue-500 mr-4" />
-            <span>Quality and satisfaction guaranteed</span>
-          </li>
-        </ul>
+  const [activeTab, setActiveTab] = useState<Tab>("History");
+
+  const tabContent: Record<Tab, string> = {
+    History:
+      "Founded over 25 years ago, our company has been a leader in providing exceptional plumbing solutions to our community. We began with a commitment to quality and customer satisfaction, which remains at the core of everything we do.",
+    Mission:
+      "Our mission is to deliver reliable and innovative plumbing services tailored to meet the needs of our customers. We strive to enhance comfort and convenience while maintaining the highest standards of professionalism.",
+    Vision:
+      "We envision a future where every home and business enjoys uninterrupted plumbing services. Our goal is to be the most trusted name in the industry, building lasting relationships through quality and care.",
+  };
+
+  return (
+    <section className="bg-white">
+      {/* Hero Background */}
+      <div className="relative w-full h-[300px] sm:h-[400px] overflow-hidden">
+        <Image
+          src="/white-mountain.jpg"
+          alt="About Us Background"
+          layout="fill"
+          objectFit="cover"
+          className="opacity-80"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-800 via-transparent to-blue-800 opacity-20"></div>
+        <div className="absolute top-12 left-12 sm:top-16 sm:left-20 md:left-28 lg:left-36 text-left z-10 max-w-3xl">
+          <p className="bold-20 uppercase text-sky-900">— About Us</p>
+          <h2 className="bold-40 lg:bold-64 text-sky-800 mt-4">
+            Discover Our Story
+          </h2>
+          <p className="regular-20 text-gray-200 mt-2">
+            Our journey in plumbing, your path to satisfaction.
+          </p>
+        </div>
       </div>
 
-      {/* Image Section */}
-      <div className="lg:w-1/2 mt-10 lg:mt-0 relative flex justify-center lg:justify-end">
-        <div className="relative overflow-hidden rounded-lg shadow-lg w-80 sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[350px] lg:h-[450px]">
-          <Image
-            src="/construction.jpg"
-            alt="About our company"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-          />
-          {/* Overlay Element */}
-          <div className="absolute bottom-4 left-4 bg-white bg-opacity-80 text-sm text-gray-900 p-3 rounded-lg shadow-md">
-            <p className="font-semibold">10+ Years of Experience</p>
+      {/* Tabs Section */}
+      <div className="relative bg-white py-16 px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left: Image */}
+          <div className="relative">
+            <div className="relative w-full h-[300px] sm:h-[350px] lg:h-[400px] rounded-lg overflow-hidden shadow-lg -mt-32">
+              <Image
+                src="/hero-history.jpg"
+                alt="About Us Image"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-lg"
+              />
+            </div>
+          </div>
+
+          {/* Right: Tabs Section */}
+          <div>
+            {/* Tabs */}
+            <div className="flex space-x-6 border-b-2 border-gray-200 pb-4 mb-6">
+              <button
+                className={`flex items-center space-x-2 text-lg font-semibold ${
+                  activeTab === "History"
+                    ? "text-blue-600 border-b-4 border-blue-600"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab("History")}
+              >
+                <FaHistory />
+                <span>History</span>
+              </button>
+              <button
+                className={`flex items-center space-x-2 text-lg font-semibold ${
+                  activeTab === "Mission"
+                    ? "text-blue-600 border-b-4 border-blue-600"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab("Mission")}
+              >
+                <FaChartLine />
+                <span>Mission</span>
+              </button>
+              <button
+                className={`flex items-center space-x-2 text-lg font-semibold ${
+                  activeTab === "Vision"
+                    ? "text-blue-600 border-b-4 border-blue-600"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab("Vision")}
+              >
+                <FaRegLightbulb />
+                <span>Vision</span>
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div>
+              <p className="text-gray-800 regular-18 leading-relaxed">{tabContent[activeTab]}</p>
+            </div>
           </div>
         </div>
       </div>

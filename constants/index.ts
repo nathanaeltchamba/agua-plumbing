@@ -3,15 +3,8 @@ export const NAV_LINKS = [
   { href: '/', key: 'home', label: 'Home' },
   { href: '/about', key: 'about', label: 'About Us' },
   { href: '/services', key: 'services', label: 'Services' },
+  // { href: '/projects', key: 'projects', label: 'Projects' },
   { href: '/contact', key: 'contact_us', label: 'Contact Us' },
-];
-
-// CAMP SECTION
-export const PEOPLE_URL = [
-  '/faucet.jpg',
-  '/mountain.jpg',
-  '/hero-background.jpg',
-  '/icon.svg',
 ];
 
 

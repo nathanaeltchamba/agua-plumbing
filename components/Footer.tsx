@@ -1,6 +1,6 @@
 import { FOOTER_CONTACT_INFO, FOOTER_LINKS, NAV_LINKS } from '@/constants';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link"
 import React from 'react';
 
 const Footer = () => {

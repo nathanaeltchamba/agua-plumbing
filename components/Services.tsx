@@ -1,148 +1,203 @@
 "use client";
+
 import Image from "next/image";
 import { useState } from "react";
+import { FaCheckCircle, FaTimes } from "react-icons/fa";
 
-// Define a type for service data to resolve type issues
 type ServiceData = {
-  imageUrl: string;
-  title: string;
-  description: string;
+    imageUrl: string;
+    title: string;
+    description: string;
+    points: string[];
 };
 
 const servicesData: ServiceData[] = [
-  {
-    imageUrl: "/bathroom.jpg",
-    title: "Emergency Plumbing Services",
-    description: "Available 24/7 in Your Area",
-  },
-  {
-    imageUrl: "/bathroom1.jpg",
-    title: "Leak Detection Experts",
-    description: "Fast, Reliable, and Accurate Service",
-  },
-  {
-    imageUrl: "/bgimage1.jpg",
-    title: "Pipe & Drain Cleaning",
-    description: "High-Pressure Cleaning for Clogs",
-  },
-  {
-    imageUrl: "/bgimage.jpg",
-    title: "Water Heater Installation",
-    description: "Efficient Installation & Replacement",
-  },
-  {
-    imageUrl: "/mountain.jpg",
-    title: "Bathroom Renovations",
-    description: "Customizable Designs & Repairs",
-  },
-  {
-    imageUrl: "/mountain.jpg",
-    title: "Bathroom Renovations",
-    description: "Customizable Designs & Repairs",
-  },
+    {
+        imageUrl: "/standford-service.jpg",
+        title: "New Construction",
+        description: "Expert Plumbing for New Builds",
+        points: [
+            "Comprehensive plumbing design and installation",
+            "Collaboration with contractors and architects",
+            "Efficient project management from start to finish",
+            "Adherence to building codes and standards",
+            "High-quality materials for lasting results",
+        ],
+    },
+    {
+        imageUrl: "/contract-kitchen2.jpg",
+        title: "Residential/Renovations",
+        description: "Transforming Homes with Quality Plumbing",
+        points: [
+            "Upgrading plumbing for remodels and additions",
+            "Modern fixtures and eco-friendly options",
+            "Minimally invasive techniques to protect your home",
+            "Expert handling of complex renovation challenges",
+            "Personalized solutions to fit your style and budget",
+        ],
+    },
+    {
+        imageUrl: "/small_commercial.png",
+        title: "Small Commercial",
+        description: "Reliable Plumbing for Small Businesses",
+        points: [
+            "Customized plumbing solutions for commercial needs",
+            "Efficient installation with minimal disruption",
+            "Preventative maintenance for business continuity",
+            "Experienced with retail, office, and small facility plumbing",
+            "Compliance with local regulations and codes",
+        ],
+    },
+    {
+        imageUrl: "/gaslines.jpg",
+        title: "Gas",
+        description: "Safe Gas Line Installation & Maintenance",
+        points: [
+            "Expert gas line installation and replacement",
+            "Leak detection and repair services",
+            "Adherence to safety standards and regulations",
+            "Efficient gas line upgrades and rerouting",
+            "Emergency response for gas-related issues",
+        ],
+    },
+    {
+        imageUrl: "/mechanical1.jpg",
+        title: "Mechanical",
+        description: "Comprehensive Mechanical System Services",
+        points: [
+            "HVAC system installation and repair",
+            "Boiler and furnace maintenance",
+            "Customized mechanical solutions for optimal performance",
+            "Energy-efficient upgrades",
+            "Regular inspections to ensure safety and efficiency",
+        ],
+    },
 ];
 
-// Modal component for image with type annotations
-const ImageModal = ({
-    isOpen,
-    onClose,
-    imageUrl,
-    title,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    imageUrl: string;
-    title: string;
-  }) => {
-    if (!isOpen) return null;
-    return (
-      <div
-        className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
-        onClick={onClose}
-      >
-        <div className="relative max-w-3xl w-full mx-4 p-4 bg-white rounded-lg">
-          <button
-            onClick={onClose}
-            className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 focus:outline-none"
-          >
-            ✕
-          </button>
-          <Image
-            src={imageUrl}
-            alt={title}
-            width={1000}
-            height={700}
-            objectFit="contain"
-            className="rounded-lg"
-          />
-        </div>
-      </div>
-    );
-  };
-
 const ServicesGallery = () => {
-    const [selectedImage, setSelectedImage] = useState<ServiceData | null>(null);
-  
+    const [selectedService, setSelectedService] = useState<ServiceData | null>(null);
+
+    const openModal = (service: ServiceData) => {
+        setSelectedService(service);
+    };
+
+    const closeModal = () => {
+        setSelectedService(null);
+    };
+
     return (
-      <section className="bg-gray-10 pb-8">
-        {/* Hero Section */}
-        <div className="relative w-full h-80 sm:h-[400px] lg:h-[500px] overflow-hidden">
-          <Image
-            src="/bathroom1.jpg"
-            alt="Services Hero"
-            layout="fill"
-            objectFit="cover"
-            className="opacity-70"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-            <h1 className="text-5xl font-bold text-white">Services</h1>
-          </div>
-        </div>
-  
-        <h2 className="text-4xl font-bold text-gray-900 text-center mt-12 mb-10">
-          Our Expertise
-        </h2>
-  
-        {/* Gallery Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {servicesData.map((service, index) => (
-              <div
-                key={index}
-                onClick={() => setSelectedImage(service)}
-                className="relative group overflow-hidden rounded-xl shadow-lg bg-gray-100 cursor-pointer h-64"
-              >
+        <section>
+            {/* Hero Section */}
+            <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] overflow-hidden">
                 <Image
-                  src={service.imageUrl}
-                  alt={service.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transition-transform duration-300 group-hover:scale-110"
+                    src="/contract-kitchen.jpg"
+                    alt="Services Hero"
+                    layout="fill"
+                    objectFit="cover"
+                    className="opacity-70"
                 />
-  
-                <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-50 transition-opacity duration-300"></div>
-  
-                <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
-                  <h3 className="text-lg font-semibold text-white opacity-90 group-hover:opacity-100">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {service.description}
-                  </p>
+                <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
+                    <h3 className="text-gray-100 regular-40 sm:regular-88 tracking-wide uppercase">
+                        Services
+                    </h3>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-  
-        <ImageModal
-          isOpen={!!selectedImage}
-          onClose={() => setSelectedImage(null)}
-          imageUrl={selectedImage?.imageUrl || ""}
-          title={selectedImage?.title || ""}
-        />
-      </section>
+            </div>
+
+            {/* Text Section */}
+            <div className="py-12 px-16 sm:px-36">
+                <h3 className="text-blue-600 regular-20 uppercase">
+                    Our Services
+                </h3>
+                <div className="mt-3 flex justify-start">
+                    <div className="w-8 sm:w-12 h-1 bg-blue-600 rounded-full"></div>
+                </div>
+                <h1 className="text-gray-900 regular-40 sm:regular-88 mt-4">
+                    We build <br/> solutions for <br/> your business.
+                </h1>
+                <p className="text-gray-600 regular-18 mt-6 max-w-2xl  leading-relaxed">
+                    Our journey in plumbing is your path to satisfaction. Discover how we provide innovative
+                    and reliable solutions.
+                </p>
+            </div>
+
+            {/* Services Section */}
+            <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {servicesData.map((service, index) => (
+                        <div
+                            key={index}
+                            onClick={() => openModal(service)}
+                            className="group relative overflow-hidden rounded-xl shadow-md bg-gray-100 cursor-pointer"
+                        >
+                            <div className="h-64 w-full relative">
+                                <Image
+                                    src={service.imageUrl}
+                                    alt={service.title}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className="rounded-t-xl transition-transform duration-300 group-hover:scale-110"
+                                />
+                            </div>
+                            <div className="p-6 bg-white">
+                                <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                    {service.title}
+                                </h3>
+                                <p className="text-gray-600 text-sm mt-2">{service.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Modal */}
+            {selectedService && (
+                <div
+                    className="fixed inset-0 z-50 bg-black bg-opacity-80 flex justify-center items-center"
+                    onClick={closeModal}
+                >
+                    <div
+                        className="relative max-w-4xl w-full mx-4 bg-white rounded-lg shadow-lg overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Close Button */}
+                        <button
+                            onClick={closeModal}
+                            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                        >
+                            <FaTimes />
+                        </button>
+
+                        {/* Modal Content */}
+                        <div className="flex flex-col md:flex-row">
+                            <div className="relative w-full md:w-1/2 h-64 sm:h-80 lg:h-96">
+                                <Image
+                                    src={selectedService.imageUrl}
+                                    alt={selectedService.title}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className="rounded-l-lg"
+                                />
+                            </div>
+                            <div className="w-full md:w-1/2 p-6">
+                                <h3 className="regular-32 text-gray-900 mb-4">
+                                    {selectedService.title}
+                                </h3>
+                                <p className="text-gray-500 mb-6">{selectedService.description}</p>
+                                <ul className="space-y-3 text-gray-800">
+                                    {selectedService.points.map((point, idx) => (
+                                        <li key={idx} className="flex items-start space-x-2">
+                                            <FaCheckCircle className="text-blue-600 mt-1" />
+                                            <span>{point}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </section>
     );
-  };
-  
-  export default ServicesGallery;
+};
+
+export default ServicesGallery;
