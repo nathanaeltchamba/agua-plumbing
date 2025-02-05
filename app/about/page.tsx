@@ -1,6 +1,5 @@
 "use client";
 
-import AboutUs from '@/components/AboutUs';
 import React, { useState, useEffect, useRef } from 'react';
 import Image from "next/image";
 import Link from "next/link";
@@ -135,32 +134,6 @@ const About = () => {
       </section>
 
 
-      {/* <section className="bg-blue-50 py-16 mx-16 mt-16 rounded-2xl shadow-xl">
-        <div className="max-w-screen-lg mx-auto px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl text-blue-900 mb-6">
-            Our History
-          </h2>
-          <p className="text-gray-700 text-lg mb-8 max-w-2xl mx-auto">
-            Agua Plumbing has proudly served the community for over 25 years, offering reliable, high-quality services. Our journey is marked by a commitment to excellence and innovation in everything we do.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { year: "1998", text: "Founded in Denver with a focus on customer service.", icon: <FaClock className="text-blue-600 text-3xl" /> },
-              { year: "2005", text: "Expanded services to include eco-friendly initiatives.", icon: <FaHandsHelping className="text-green-600 text-3xl" /> },
-              { year: "2015", text: "Launched advanced safety protocols for all services.", icon: <FaShieldAlt className="text-red-500 text-3xl" /> },
-              { year: "2023", text: "Celebrated 25 years of service excellence.", icon: <FaChartLine className="text-purple-500 text-3xl" /> },
-            ].map((milestone, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-6 transition transform hover:scale-105">
-                <div className="text-2xl font-bold text-blue-900">{milestone.year}</div>
-                <div className="flex items-center justify-center mt-4">{milestone.icon}</div>
-                <p className="text-gray-600 mt-4">{milestone.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-
       {/* Main About Us Section */}
       <section className="relative flex flex-col items-center py-16 lg:py-24 lg:flex-row lg:gap-12 max-w-screen-xl mx-auto">
         {/* Text Section */}
@@ -212,15 +185,6 @@ const About = () => {
               At Agua Plumbing, we operate on a foundation of principles that guide our actions and shape our success. Our core values are the heart of our commitment to delivering quality and excellence.
             </p>
           </div>
-          {/* <div className="absolute bottom-2 left-20 transform -translate-y-10 translate-x-10 pointer-events-none">
-            <Image
-              src="/badges1.svg"
-              alt="Background logo"
-              width={125}
-              height={125}
-              className="hidden lg:block"
-            />
-          </div> */}
 
           {/* About Details on Right */}
           <div className="lg:w-1/2">
