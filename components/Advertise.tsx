@@ -3,7 +3,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 const Advertise = () => {
   return (
-    <section className="relative z-30 py-16 px-6 sm:px-12 bg-gray-100">
+    <section className="relative z-20 py-16 px-6 sm:px-12 bg-gray-100">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center">
         {/* Left Section */}
         <div className="flex flex-col items-start lg:w-1/2">

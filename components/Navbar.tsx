@@ -30,7 +30,7 @@ const Navbar = () => {
     return (
         <>
             {/* Main Navbar for Large Screens */}
-            <nav className={`fixed top-0 left-0 w-full z-30 py-5 transition-transform duration-300 ease-in-out ${scrollingUp ? 'translate-y-0' : '-translate-y-full'}`}>
+            <nav className={`fixed top-0 left-0 w-full z-50 py-5 transition-transform duration-300 ease-in-out ${scrollingUp ? 'translate-y-0' : '-translate-y-full'}`}>
                 <div className="hidden lg:flex justify-between items-center max-w-screen-xl mx-auto px-6">
                     <Link href="/">
                         <Image src="/logo.png" alt="logo" width={174} height={29} />
