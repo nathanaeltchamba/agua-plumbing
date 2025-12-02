@@ -4,7 +4,13 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 
 const ContactComponent = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+    company: ''   
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -33,7 +39,10 @@ const ContactComponent = () => {
 
       const responseData = await res.json();
       setSuccess(responseData.message || 'Message sent successfully!');
-      setFormData({ name: '', email: '', message: '' });
+
+      // Reset all fields including honeypot
+      setFormData({ name: '', email: '', message: '', company: '' });
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
       setError(errorMessage);
@@ -57,17 +66,27 @@ const ContactComponent = () => {
         </div>
       </section>
 
-      {/* Contact Form, Information, and Map Section */}
       <section className="relative z-10 -mt-20 max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left: Contact Form */}
+
         <div className="p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center lg:text-left">Send Us a Message</h2>
 
-          {/* Display Success or Error Messages */}
           {success && <p className="text-green-600 text-center mb-4">{success}</p>}
           {error && <p className="text-red-600 text-center mb-4">{error}</p>}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+
+            {/* Honeypot field */}
+            <input
+              type="text"
+              id="company"
+              value={formData.company}
+              onChange={handleChange}
+              style={{ display: "none" }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+
             <div>
               <label htmlFor="name" className="block text-gray-700 font-medium">Full Name</label>
               <input
@@ -80,6 +99,7 @@ const ContactComponent = () => {
                 required
               />
             </div>
+
             <div>
               <label htmlFor="email" className="block text-gray-700 font-medium">Email Address</label>
               <input
@@ -92,6 +112,7 @@ const ContactComponent = () => {
                 required
               />
             </div>
+
             <div>
               <label htmlFor="message" className="block text-gray-700 font-medium">Message</label>
               <textarea
@@ -104,6 +125,7 @@ const ContactComponent = () => {
                 required
               ></textarea>
             </div>
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors"
@@ -136,7 +158,6 @@ const ContactComponent = () => {
           </div>
         </div>
 
-        {/* Full-Width Map Section */}
         <div className="col-span-1 lg:col-span-2 w-full h-96 rounded-lg overflow-hidden shadow-2xl mt-8 mb-12">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d104408.38243546088!2d-105.0560142064145!3d39.73923635506644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x876c78d54dd939b7%3A0x4b6d6bfe53010b8f!2sDenver%2C%20CO%2C%20USA!5e0!3m2!1sen!2sus!4v1699984989853!5m2!1sen!2sus"

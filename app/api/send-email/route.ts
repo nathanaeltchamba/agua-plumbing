@@ -3,7 +3,15 @@ import nodemailer from 'nodemailer';
 export async function POST(req: Request) {
     try {
         // Destructure the form data from the request body
-        const { name, email, message } = await req.json();
+        const { name, email, message, company } = await req.json();
+
+        // Honeypot check 
+        if (company && company.trim() !== "") {
+            return new Response(
+                JSON.stringify({ status: "success", message: "Message sent successfully!" }),
+                { status: 200 }
+            );
+        }
 
         // Setup nodemailer transport
         const transporter = nodemailer.createTransport({
@@ -16,11 +24,11 @@ export async function POST(req: Request) {
             },
         });
 
-        // 1️ **Email to the company**
+        // 1️ Email to the company
         const companyMailOptions = {
-            from: 'admin@aguaplumbingco.com', // Your business email
-            to: 'admin@aguaplumbingco.com',  // Recipient (company's email)
-            replyTo: email,                  // User's email for direct reply
+            from: 'admin@aguaplumbingco.com',
+            to: 'admin@aguaplumbingco.com',
+            replyTo: email,
             subject: `New Inquiry from Agua Plumbing Website: ${name}`,
             text: `Hello,\n\nYou have received a new inquiry from your website.\n\nDetails:\nName: ${name}\nEmail: ${email}\nMessage: ${message}\n\nBest regards,\nAgua Plumbing Website`,
             html: `
@@ -36,10 +44,10 @@ export async function POST(req: Request) {
             `,
         };
 
-        // 2️ **Auto-reply email to the user**
+        // 2️ Auto-reply email to the user
         const autoReplyOptions = {
-            from: 'no-reply@aguaplumbingco.com',  // No-reply email
-            to: email,                            // User's email
+            from: 'no-reply@aguaplumbingco.com',
+            to: email,
             subject: `We've Received Your Inquiry - Agua Plumbing`,
             text: `Hello ${name},\n\nThank you for reaching out to Agua Plumbing. We have received your inquiry and will get back to you as soon as possible.\n\nBest regards,\nAgua Plumbing Team`,
             html: `
@@ -49,15 +57,21 @@ export async function POST(req: Request) {
             `,
         };
 
-        // Send both emails
         await Promise.all([
-            transporter.sendMail(companyMailOptions), // Email to company
-            transporter.sendMail(autoReplyOptions)   // Auto-reply to user
+            transporter.sendMail(companyMailOptions),
+            transporter.sendMail(autoReplyOptions)
         ]);
 
-        return new Response(JSON.stringify({ status: 'success', message: 'Message sent successfully!' }), { status: 200 });
+        return new Response(
+            JSON.stringify({ status: 'success', message: 'Message sent successfully!' }),
+            { status: 200 }
+        );
+
     } catch (error) {
         console.error('Error sending email:', error);
-        return new Response(JSON.stringify({ status: 'error', message: 'Internal Server Error' }), { status: 500 });
+        return new Response(
+            JSON.stringify({ status: 'error', message: 'Internal Server Error' }),
+            { status: 500 }
+        );
     }
 }
