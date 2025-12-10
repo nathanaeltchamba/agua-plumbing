@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 export async function POST(req: Request) {
   try {
     const { name, email, message, company, reCaptchaToken } = await req.json();
+    console.log("Received reCaptchaToken:", reCaptchaToken);
 
     // Honeypot trap
     if (company && company.trim() !== "") {
