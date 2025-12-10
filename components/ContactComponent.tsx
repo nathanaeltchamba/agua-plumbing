@@ -1,19 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Image from "next/image";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const ContactComponent = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-    company: ''   
+    name: "",
+    email: "",
+    message: "",
+    company: "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -22,30 +25,32 @@ const ContactComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
+
+    if (!executeRecaptcha) {
+      setError("ReCAPTCHA failed to load.");
+      setLoading(false);
+      return;
+    }
 
     try {
-      const res = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      // 🔥 Generate reCAPTCHA token
+      const reCaptchaToken = await executeRecaptcha("contact_form");
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, reCaptchaToken }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Something went wrong');
-      }
+      const data = await res.json();
 
-      const responseData = await res.json();
-      setSuccess(responseData.message || 'Message sent successfully!');
+      if (!res.ok) throw new Error(data.message || "Something went wrong");
 
-      // Reset all fields including honeypot
-      setFormData({ name: '', email: '', message: '', company: '' });
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
-      setError(errorMessage);
+      setSuccess(data.message || "Message sent successfully!");
+      setFormData({ name: "", email: "", message: "", company: "" });
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -80,9 +85,10 @@ const ContactComponent = () => {
             <input
               type="text"
               id="company"
+              name="company"
               value={formData.company}
               onChange={handleChange}
-              style={{ display: "none" }}
+              className="sr-only"
               tabIndex={-1}
               autoComplete="off"
             />
