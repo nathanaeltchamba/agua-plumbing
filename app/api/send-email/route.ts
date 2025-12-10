@@ -3,7 +3,6 @@ import nodemailer from "nodemailer";
 export async function POST(req: Request) {
   try {
     const { name, email, message, company, reCaptchaToken } = await req.json();
-    console.log("Received reCaptchaToken:", reCaptchaToken);
 
     // Honeypot trap
     if (company && company.trim() !== "") {
@@ -28,16 +27,6 @@ export async function POST(req: Request) {
     });
 
     const verifyData = await verifyRes.json();
-
-    // DEBUG LOGGING
-    console.log("===== reCAPTCHA Verification =====");
-    console.log("Full verifyData:", verifyData);
-    console.log("Success:", verifyData.success);
-    console.log("Score:", verifyData.score);
-    console.log("Action:", verifyData.action);
-    console.log("Hostname:", verifyData.hostname);
-    console.log("Error Codes:", verifyData["error-codes"]);
-    console.log("=================================");
 
     // Validate Google success
     if (!verifyData.success) {
