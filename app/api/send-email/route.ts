@@ -4,45 +4,84 @@ export async function POST(req: Request) {
   try {
     const { name, email, message, company, reCaptchaToken } = await req.json();
 
-    // Honeypot check
+    // Honeypot trap
     if (company && company.trim() !== "") {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1200));
       return new Response(JSON.stringify({ status: "success" }), { status: 200 });
     }
 
+    // Check token
     if (!reCaptchaToken) {
       return new Response(
-        JSON.stringify({ status: "error", message: "Missing reCAPTCHA reCaptchaToken" }),
+        JSON.stringify({ status: "error", message: "Missing reCAPTCHA token" }),
         { status: 400 }
       );
     }
 
-    // Verify reCAPTCHA
+    // Verify token
     const secretKey = process.env.RECAPTCHA_SECRET_KEY!;
-    const verificationRes = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `secret=${secretKey}&response=${reCaptchaToken}`,
-      }
-    );
+    const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `secret=${secretKey}&response=${reCaptchaToken}`,
+    });
 
-    const verifyData = await verificationRes.json();
-    console.log("reCAPTCHA verifyData:", verifyData);
+    const verifyData = await verifyRes.json();
 
-    // Check for basic success and score
-    if (!verifyData.success || verifyData.score < 0.5) {
+    // DEBUG LOGGING
+    console.log("===== reCAPTCHA Verification =====");
+    console.log("Full verifyData:", verifyData);
+    console.log("Success:", verifyData.success);
+    console.log("Score:", verifyData.score);
+    console.log("Action:", verifyData.action);
+    console.log("Hostname:", verifyData.hostname);
+    console.log("Error Codes:", verifyData["error-codes"]);
+    console.log("=================================");
+
+    // Validate Google success
+    if (!verifyData.success) {
       return new Response(
-        JSON.stringify({ status: "error", message: "Failed reCAPTCHA verification" }),
+        JSON.stringify({
+          status: "error",
+          message: "reCAPTCHA failed: success=false",
+          details: verifyData,
+        }),
         { status: 400 }
       );
     }
 
-    // Validate action matches your frontend
+    // Validate score
+    if (typeof verifyData.score === "number" && verifyData.score < 0.5) {
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "reCAPTCHA score too low",
+          score: verifyData.score,
+        }),
+        { status: 400 }
+      );
+    }
+
+    // Validate action
     if (verifyData.action !== "contact_form") {
       return new Response(
-        JSON.stringify({ status: "error", message: "Invalid reCAPTCHA action" }),
+        JSON.stringify({
+          status: "error",
+          message: "Invalid reCAPTCHA action",
+          receivedAction: verifyData.action,
+        }),
+        { status: 400 }
+      );
+    }
+
+    // Validate hostname (important for prod)
+    if (!["aguaplumbingco.com", "www.aguaplumbingco.com", "localhost"].includes(verifyData.hostname)) {
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "Invalid hostname",
+          receivedHostname: verifyData.hostname,
+        }),
         { status: 400 }
       );
     }
@@ -82,10 +121,15 @@ export async function POST(req: Request) {
       JSON.stringify({ status: "success", message: "Message sent successfully!" }),
       { status: 200 }
     );
+
   } catch (err) {
     console.error("Error sending email:", err);
     return new Response(
-      JSON.stringify({ status: "error", message: "Internal Server Error" }),
+      JSON.stringify({
+        status: "error",
+        message: "Internal Server Error",
+        details: String(err),
+      }),
       { status: 500 }
     );
   }
