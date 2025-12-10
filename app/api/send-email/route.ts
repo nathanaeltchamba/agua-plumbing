@@ -1,9 +1,8 @@
-// app/api/send-email/route.ts
 import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, message, company, token } = await req.json();
+    const { name, email, message, company, reCaptchaToken } = await req.json();
 
     // Honeypot check
     if (company && company.trim() !== "") {
@@ -11,9 +10,9 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ status: "success" }), { status: 200 });
     }
 
-    if (!token) {
+    if (!reCaptchaToken) {
       return new Response(
-        JSON.stringify({ status: "error", message: "Missing reCAPTCHA token" }),
+        JSON.stringify({ status: "error", message: "Missing reCAPTCHA reCaptchaToken" }),
         { status: 400 }
       );
     }
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
       {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `secret=${secretKey}&response=${token}`,
+        body: `secret=${secretKey}&response=${reCaptchaToken}`,
       }
     );
 

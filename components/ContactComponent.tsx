@@ -35,7 +35,7 @@ const ContactComponent = () => {
     }
 
     try {
-      // 🔥 Generate reCAPTCHA token
+      // Generate reCAPTCHA token
       const reCaptchaToken = await executeRecaptcha("contact_form");
       const res = await fetch("/api/send-email", {
         method: "POST",
