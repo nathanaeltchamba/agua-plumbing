@@ -1,77 +1,93 @@
-import nodemailer from 'nodemailer';
+// app/api/send-email/route.ts
+import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
-    try {
-        // Destructure the form data from the request body
-        const { name, email, message, company } = await req.json();
+  try {
+    const { name, email, message, company, token } = await req.json();
 
-        // Honeypot check 
-        if (company && company.trim() !== "") {
-            return new Response(
-                JSON.stringify({ status: "success", message: "Message sent successfully!" }),
-                { status: 200 }
-            );
-        }
-
-        // Setup nodemailer transport
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: Number(process.env.EMAIL_PORT),
-            secure: process.env.EMAIL_SECURE === 'true',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
-
-        // 1️ Email to the company
-        const companyMailOptions = {
-            from: 'admin@aguaplumbingco.com',
-            to: 'admin@aguaplumbingco.com',
-            replyTo: email,
-            subject: `New Inquiry from Agua Plumbing Website: ${name}`,
-            text: `Hello,\n\nYou have received a new inquiry from your website.\n\nDetails:\nName: ${name}\nEmail: ${email}\nMessage: ${message}\n\nBest regards,\nAgua Plumbing Website`,
-            html: `
-                <p>Hello,</p>
-                <p>You have received a new inquiry from your website:</p>
-                <ul>
-                    <li><strong>Name:</strong> ${name}</li>
-                    <li><strong>Email:</strong> ${email}</li>
-                    <li><strong>Message:</strong></li>
-                </ul>
-                <p>${message}</p>
-                <p>Best regards,<br>Agua Plumbing Website</p>
-            `,
-        };
-
-        // 2️ Auto-reply email to the user
-        const autoReplyOptions = {
-            from: 'no-reply@aguaplumbingco.com',
-            to: email,
-            subject: `We've Received Your Inquiry - Agua Plumbing`,
-            text: `Hello ${name},\n\nThank you for reaching out to Agua Plumbing. We have received your inquiry and will get back to you as soon as possible.\n\nBest regards,\nAgua Plumbing Team`,
-            html: `
-                <p>Hello ${name},</p>
-                <p>Thank you for reaching out to Agua Plumbing. We have received your inquiry and will get back to you as soon as possible.</p>
-                <p>Best regards,<br>Agua Plumbing Team</p>
-            `,
-        };
-
-        await Promise.all([
-            transporter.sendMail(companyMailOptions),
-            transporter.sendMail(autoReplyOptions)
-        ]);
-
-        return new Response(
-            JSON.stringify({ status: 'success', message: 'Message sent successfully!' }),
-            { status: 200 }
-        );
-
-    } catch (error) {
-        console.error('Error sending email:', error);
-        return new Response(
-            JSON.stringify({ status: 'error', message: 'Internal Server Error' }),
-            { status: 500 }
-        );
+    // Honeypot check
+    if (company && company.trim() !== "") {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      return new Response(JSON.stringify({ status: "success" }), { status: 200 });
     }
+
+    if (!token) {
+      return new Response(
+        JSON.stringify({ status: "error", message: "Missing reCAPTCHA token" }),
+        { status: 400 }
+      );
+    }
+
+    // Verify reCAPTCHA
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY!;
+    const verificationRes = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${secretKey}&response=${token}`,
+      }
+    );
+
+    const verifyData = await verificationRes.json();
+    console.log("reCAPTCHA verifyData:", verifyData);
+
+    // Check for basic success and score
+    if (!verifyData.success || verifyData.score < 0.5) {
+      return new Response(
+        JSON.stringify({ status: "error", message: "Failed reCAPTCHA verification" }),
+        { status: 400 }
+      );
+    }
+
+    // Validate action matches your frontend
+    if (verifyData.action !== "contact_form") {
+      return new Response(
+        JSON.stringify({ status: "error", message: "Invalid reCAPTCHA action" }),
+        { status: 400 }
+      );
+    }
+
+    // Send emails
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: process.env.EMAIL_SECURE === "true",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const companyMailOptions = {
+      from: "admin@aguaplumbingco.com",
+      to: "admin@aguaplumbingco.com",
+      replyTo: email,
+      subject: `New Inquiry from Agua Plumbing Website: ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+    };
+
+    const autoReplyOptions = {
+      from: "no-reply@aguaplumbingco.com",
+      to: email,
+      subject: "We've Received Your Inquiry - Agua Plumbing",
+      text: `Hello ${name},\n\nThank you for reaching out to Agua Plumbing. We will contact you shortly.`,
+    };
+
+    await Promise.all([
+      transporter.sendMail(companyMailOptions),
+      transporter.sendMail(autoReplyOptions),
+    ]);
+
+    return new Response(
+      JSON.stringify({ status: "success", message: "Message sent successfully!" }),
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("Error sending email:", err);
+    return new Response(
+      JSON.stringify({ status: "error", message: "Internal Server Error" }),
+      { status: 500 }
+    );
+  }
 }
